@@ -1,0 +1,59 @@
+import type { Wish } from "Wish"
+import { Wish, after } from "Wish"
+
+import Thread from "Thread"
+
+
+
+type Sqlite = Sqlite
+export type Sqlite
+
+type SqliteError = SqliteError(Integer, String)
+
+setTimeout :: ({} -> {}) -> Integer -> {}
+setTimeout = extern "__setTimeout__"
+
+connectFFI :: String -> (Sqlite -> Integer -> {}) -> {}
+connectFFI = extern "madlibsqlite__connect"
+
+connect :: String -> Wish SqliteError Sqlite
+export connect = (path) => Wish((bad, good) => {
+  _db = Sqlite
+  setTimeout(() => {
+    connectFFI(path, (db, err) => {
+      if (err > 0) {
+        bad(SqliteError(err, `Failed to open '${path}'`))
+      } else do {
+        _db = db
+        good(db)
+      }
+    })
+  }, 0)
+
+  return () => {
+    disconnect(_db)
+  }
+})
+
+
+disconnect :: Sqlite -> {}
+export disconnect = extern "madlibsqlite__disconnect"
+
+
+queryFFI :: Sqlite -> String -> (List String -> {}) -> (Integer -> String -> {}) -> Integer
+queryFFI = extern "madlibsqlite__query"
+
+query :: Sqlite -> String -> Wish SqliteError (List (List String))
+export query = (db, sql) => Thread.create(
+  (bad, good) => {
+    rows = []
+    
+    result = queryFFI(db, sql, (row) => { rows = [...rows, row] }, (errorCode, errorMessage) => {
+      bad(SqliteError(errorCode, errorMessage))
+    })
+
+    if (result == 0) {
+      good(rows)
+    }
+  },
+)

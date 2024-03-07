@@ -1,0 +1,21 @@
+#!/bin/sh
+
+mkdir -p .buildlibs
+mkdir -p lib/lib
+mkdir -p lib/include
+
+cd .buildlibs
+wget https://github.com/sqlite/sqlite/archive/refs/tags/vesion-3.45.1.zip
+unzip vesion-3.45.1.zip
+cd sqlite-vesion-3.45.1
+mkdir build
+cd build
+../configure
+make
+cp .libs/*.a ../../../lib/lib/
+cp .libs/*.la ../../../lib/lib/
+cp sqlite3.h ../../../lib/include/
+cd ../../../
+
+# # build libmadsqlite.a
+make -C lib -j

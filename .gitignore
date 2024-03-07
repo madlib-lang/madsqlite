@@ -1,0 +1,13 @@
+node_modules
+madlib_modules
+.module_cache
+src/HelloWorld.mad
+build
+lib/include
+lib/lib
+a.out.dSYM
+a.out
+.buildlibs
+.vscode
+src/Test.mad
+db.db

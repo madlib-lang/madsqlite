@@ -1,0 +1,12 @@
+{
+  "name": "MadSqlite",
+  "version": "0.0.1",
+  "main": "src/Main.mad",
+  "hooks": {
+    "postInstall": "./scripts/build-lib"
+  },
+  "staticLibs": [
+    "./lib/lib/libsqlite3.a",
+    "./lib/build/libmadsqlite.a"
+  ]
+}
